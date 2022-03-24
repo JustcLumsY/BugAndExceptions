@@ -28,13 +28,15 @@ namespace BugAndExceptions
    
         public void PrintItemsInCart(Shop shop)
         {
+            shop.totalPrice = 0;
             Console.WriteLine("ShoppingCart now has: ");
             foreach(var Item in ShoppingCart)
             {           
-                Console.WriteLine(Item.ItemName);
+                Console.WriteLine($"<{Item.ItemName}> {Item.Price} NOK");
                 shop.totalPrice += Item.Price;
             }
-            Console.WriteLine("total price is: " + shop.totalPrice);
+            if (shop.totalPrice <= 0) { return; }
+            Console.WriteLine($"Total price is: { shop.totalPrice} { CustomerBankInfo.Currency}");
             Console.WriteLine();
         }
         public void BuyItemsInCart(Customer customer)
@@ -44,7 +46,7 @@ namespace BugAndExceptions
             Console.WriteLine("Items bought");
             foreach(var Item in Inventory)
             {
-                Console.WriteLine($"{Item.ItemName} {Item.Price}Kr");
+                Console.WriteLine($"<{Item.ItemName}> {Item.Price} NOK");
             }                 
         }
     }

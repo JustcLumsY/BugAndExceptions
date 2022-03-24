@@ -38,11 +38,11 @@ namespace BugAndExceptions
             Run(shop, customer);       
         }
 
-        public void PrintItems()
+        public void PrintItems(Customer customer)
         {
             foreach (var item in ShopItems)
             {
-                Console.WriteLine($"item: {item.Id} {item.ItemName} costs {item.Price}.");
+                Console.WriteLine($"item: {item.Id} {item.ItemName} costs {item.Price} {customer.CustomerBankInfo.Currency}.");
             }
         }
 
@@ -52,7 +52,7 @@ namespace BugAndExceptions
             {
                 customer.BuyItemsInCart(customer);
                 customer.CustomerBankInfo.Balance -= totalPrice;
-                Console.WriteLine($"Money return: {customer.CustomerBankInfo.Balance}{customer.CustomerBankInfo.Currency}");
+                Console.WriteLine($"Money return: {customer.CustomerBankInfo.Balance} {customer.CustomerBankInfo.Currency}");
                 Console.ReadLine();
                // Run(shop, customer);
             }
@@ -66,9 +66,10 @@ namespace BugAndExceptions
         public void CheckBalance(Shop shop, Customer customer)
         {
           
-            if (customer.CustomerBankInfo.Balance< totalPrice)
+            if (customer.CustomerBankInfo.Balance < totalPrice)
             {
-                Console.WriteLine($"TotalPrice: {totalPrice}");
+                Console.WriteLine($"TotalPrice: {totalPrice} " +
+                      $"{customer.CustomerBankInfo.Currency}");
                 Console.WriteLine("Insert money");
                 var userInput = Convert.ToInt32(Console.ReadLine());
                 customer.CustomerBankInfo.Balance = userInput;
@@ -80,30 +81,31 @@ namespace BugAndExceptions
         {
             while (true)
             {
-                shop.PrintItems();
+                shop.PrintItems(customer);
+               
                 Console.WriteLine();
                 Console.WriteLine("What do you want to buy?");
-                Console.WriteLine("if finished shopping, write 0");
-                Console.WriteLine("Reset shopping cart, write r");
+                Console.WriteLine("Purchase cart '0'");
+                Console.WriteLine("Reset cart 'r'");
                 Console.WriteLine();
-
+                customer.PrintItemsInCart(shop);
                 var itemNumber = Console.ReadLine();
                 if (itemNumber == "0")
                 {
-                    foreach (var item in customer.ShoppingCart)
-                    {
-                        shop.totalPrice += item.Price;
-                    }
+                    //foreach (var item in customer.ShoppingCart)
+                    //{
+                    //    shop.totalPrice += item.Price;
+                    //}
                     shop.CheckOut(shop,customer);
                     shop.CheckBalance(shop, customer);
                 }
                 
-                   if (itemNumber == "r")
+                   if (itemNumber == "r".ToLower())
                 {
                     ResetShoppingCart(shop ,customer);
                 }
-                customer.AddItemToShoppingCart(shop.ShopItems.Find(item => item.Id == itemNumber));
-                customer.PrintItemsInCart(shop);
+                customer.AddItemToShoppingCart(shop.ShopItems.Find(item =>  item.Id == itemNumber));
+                
             }
         }
     }
