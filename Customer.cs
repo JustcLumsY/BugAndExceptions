@@ -39,9 +39,8 @@ namespace BugAndExceptions
             Console.WriteLine($"Total price is: { shop.totalPrice} { CustomerBankInfo.Currency}");
             Console.WriteLine();
         }
-        public void BuyItemsInCart(Customer customer)
+        public void BuyItemsInCart()
         {
-            var moneyleft = customer.CustomerBankInfo.Balance;
             Inventory = ShoppingCart;
             Console.WriteLine("Items bought");
             foreach(var Item in Inventory)

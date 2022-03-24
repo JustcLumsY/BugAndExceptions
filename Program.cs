@@ -19,10 +19,9 @@ namespace BugAndExceptions
                 {
                     BankName = "DNB",
                     AccountNumber = "1111 2222 3333 4444",
-                    Balance = 0,
+                    Balance = 20000,
                     Currency = "NOK"
                 });
-            //var bank = new BankInformation();
             Shop.Run(shop, customer);
         }              
    }

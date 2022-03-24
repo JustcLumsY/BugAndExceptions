@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 
 namespace BugAndExceptions
 {
@@ -50,11 +51,12 @@ namespace BugAndExceptions
         {
             if (customer.CustomerBankInfo.Balance >= totalPrice)
             {
-                customer.BuyItemsInCart(customer);
+                customer.BuyItemsInCart();
                 customer.CustomerBankInfo.Balance -= totalPrice;
-                Console.WriteLine($"Money return: {customer.CustomerBankInfo.Balance} {customer.CustomerBankInfo.Currency}");
-                Console.ReadLine();
-               // Run(shop, customer);
+                Console.WriteLine("Thanks for shopping");
+                customer.ShoppingCart.Clear();
+                Thread.Sleep(4000);
+                Run(shop, customer);
             }
             else
             {
@@ -64,25 +66,36 @@ namespace BugAndExceptions
         }
 
         public void CheckBalance(Shop shop, Customer customer)
-        {
-          
+        {    
             if (customer.CustomerBankInfo.Balance < totalPrice)
             {
-                Console.WriteLine($"TotalPrice: {totalPrice} " +
-                      $"{customer.CustomerBankInfo.Currency}");
-                Console.WriteLine("Insert money");
-                var userInput = Convert.ToInt32(Console.ReadLine());
-                customer.CustomerBankInfo.Balance = userInput;
-              
+                Console.WriteLine("Not enough money");
+                Console.WriteLine("S to check balance or Enter to continue");             
+                ShowBalance(shop, customer);
                 CheckOut(shop, customer);
             }
         }
+
+        private void ShowBalance(Shop shop, Customer customer)
+        {
+            var userinput = Console.ReadLine();
+            if (userinput == "S".ToLower()) 
+            { 
+                Console.WriteLine(customer.CustomerBankInfo.Balance + customer.CustomerBankInfo.Currency);
+                Console.ReadLine();
+                customer.ShoppingCart.Clear();
+                Run(shop, customer);
+            }
+            customer.ShoppingCart.Clear();
+            Console.Clear();
+            Run(shop, customer);
+        }
+
         public static void Run(Shop shop, Customer customer)
         {
             while (true)
             {
-                shop.PrintItems(customer);
-               
+                shop.PrintItems(customer);             
                 Console.WriteLine();
                 Console.WriteLine("What do you want to buy?");
                 Console.WriteLine("Purchase cart '0'");
@@ -92,20 +105,14 @@ namespace BugAndExceptions
                 var itemNumber = Console.ReadLine();
                 if (itemNumber == "0")
                 {
-                    //foreach (var item in customer.ShoppingCart)
-                    //{
-                    //    shop.totalPrice += item.Price;
-                    //}
                     shop.CheckOut(shop,customer);
                     shop.CheckBalance(shop, customer);
-                }
-                
-                   if (itemNumber == "r".ToLower())
+                }     
+                if (itemNumber == "r".ToLower())
                 {
                     ResetShoppingCart(shop ,customer);
                 }
-                customer.AddItemToShoppingCart(shop.ShopItems.Find(item =>  item.Id == itemNumber));
-                
+                customer.AddItemToShoppingCart(shop.ShopItems.Find(item =>  item.Id == itemNumber));              
             }
         }
     }
